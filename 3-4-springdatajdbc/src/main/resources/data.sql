@@ -1,0 +1,1 @@
+INSERT INTO Person(first_name,last_name) VALUES('Mayank', 'Hygo')
