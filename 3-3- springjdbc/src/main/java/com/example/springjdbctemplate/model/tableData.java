@@ -1,4 +1,4 @@
-package com.example.jpahome.model;
+package com.example.springjdbctemplate.model;
 
 import lombok.Data;
 

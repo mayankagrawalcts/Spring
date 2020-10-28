@@ -1,10 +1,11 @@
-package com.example.jpahome.model;
+package com.example.springjdbctemplate.model;
 
 public class Items {
     private Long id;
     private String name;
     private int price;
 
+    public Items(){}
     public Items(Long id, String name, int price) {
         this.id = id;
         this.name = name;
