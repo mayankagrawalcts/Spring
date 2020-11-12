@@ -1,20 +1,19 @@
 package com.example.springjpahello.service;
 
-import com.example.springjpahello.entity.Address;
-import com.example.springjpahello.entity.Passport;
-import com.example.springjpahello.entity.Student;
+import com.example.springjpahello.entity.*;
 import com.example.springjpahello.model.Item;
 import com.example.springjpahello.model.Person;
-import com.example.springjpahello.repo.ItemRepositoryImpl;
-import com.example.springjpahello.repo.Itemrepository;
-import com.example.springjpahello.repo.PersonRepository;
-import com.example.springjpahello.repo.Studentrepository;
+import com.example.springjpahello.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class DemoServiceImpl implements DemoService {
@@ -27,6 +26,38 @@ public class DemoServiceImpl implements DemoService {
 
     @Autowired
     Studentrepository studentrepository;
+    @Autowired
+    GenericRepository genericRepository;
+    @Autowired
+    EmployeeRepository employeeRepository;
+    @PersistenceContext
+    EntityManager em;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Transactional
+    public void employeeService() {
+        Employee e=new PartTimeEmployee("Mayank",new BigDecimal(12.3));
+        Employee e1=new FullTimeEmployee("Mayank",new BigDecimal(12333.3));
+        Employee e2=new FullTimeEmployee("Mayank saved",new BigDecimal(12333.3));
+        employeeRepository.save(e);
+        employeeRepository.save(e1);
+        employeeRepository.save(e2);
+
+        System.out.println("find 1 element: "+em.find(PartTimeEmployee.class,e.getId()));
+        System.out.println("find by hard code Id element: "+em.find(FullTimeEmployee.class,e1.getId()));
+        /*
+        System.out.println("find all element: "+employeeRepository.findAll());
+        employeeRepository.delete(e);
+        employeeRepository.deleteById(e1.getId());
+        employeeRepository.findById(124234L).ifPresentOrElse(employeeRepository::delete,() ->{System.out.println("not found");});
+           */
+        em.remove((PartTimeEmployee)e);
+    Optional<FullTimeEmployee> op=   Optional.of( em.find(FullTimeEmployee.class,e1.getId()));
+    op.ifPresentOrElse(employeeRepository::delete,() ->{System.out.println("not found");});
+    }
+        @Transactional
     public void provideService() {
         Person person = new Person();
         person.setLastName("Mayank");
@@ -42,14 +73,19 @@ public class DemoServiceImpl implements DemoService {
         Student student = new Student();
         //System.out.println("callProcById: "+itemrepository.callProcById("updated item"));
         //System.out.println("ITEMPROCEDURE: "+itemrepository.ITEMPROCEDURE("updated item"));
-        itemRepositoryImpl.callProc();
-        student.setName("test");
+        //itemRepositoryImpl.callProc();
+        student.setName("updated Name");
         Address address=Address.builder().city("agra").line1("123").line2("345").build();
         student.setAddress(address);
         Passport passport=new Passport();
         passport.setPassportNumber("123");
         student.setPassport(passport);
-studentrepository.save(student);
+        Student student1=studentrepository.findById(19L).orElse(new Student());
+        student1.setName("Updated");
+        //studentrepository.save(student1);
+        //studentrepository.save(student);
+        genericRepository.save(passport);
+    genericRepository.save(student);
     }
 
 
@@ -96,4 +132,20 @@ studentrepository.save(student);
         System.out.println(i);
         //itemRepositoryImpl.callProc();
         }
-}
+    @Transactional
+    public void userService() {
+        Address address=new Address("line1","line2","Agra");
+        Set<String> attributes= new HashSet<>();
+        attributes.add("a1");attributes.add("a2");attributes.add("a3");attributes.add("a4");
+        User u=User.builder().active(true).address(address).age(123).binaryData("Password".getBytes()).build();
+        Map<String,User> attributesMap=new HashMap<>();
+        attributesMap.put("map1",u);
+        User u1=User.builder().address(address).attributes(attributes).manager(u).attributesMap(attributesMap).build();
+        Set<User> users=new HashSet<>();
+        users.add(u);users.add(u1);
+        User u2=User.builder().address(address).attributes(attributes).manager(u1).colleagues(users).build();
+    userRepository.save(u);
+        userRepository.save(u1);
+        userRepository.save(u2);
+    }
+    }

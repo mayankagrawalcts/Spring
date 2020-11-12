@@ -1,9 +1,21 @@
 package com.example.springjpahello.entity;
 
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@ToString
+@Builder
 @Entity
 @Table(name = "SD_User")
 public class User {
@@ -16,7 +28,7 @@ public class User {
     private int age;
     private boolean active;
 
-    @Column(nullable = false, unique = true)
+    //@Column(nullable = false, unique = true)
     private String emailAddress;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -34,12 +46,19 @@ public class User {
     @ElementCollection
     private Set<String> attributes;
 
+    @ElementCollection
+    @CollectionTable(name = "map_attribute",joinColumns = @JoinColumn(name="test_id"))
+    private Map<String,User> attributesMap=new HashMap<>();
+
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    /**
-     * Creates a new empty instance of {@code User}.
-     */
+    @CreationTimestamp
+    LocalDateTime creationTime;
+    @UpdateTimestamp
+    LocalDateTime updationTime;
+
     public User() {
     }
+
 }

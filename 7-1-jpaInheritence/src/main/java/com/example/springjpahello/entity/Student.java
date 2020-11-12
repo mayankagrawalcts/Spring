@@ -1,6 +1,13 @@
 package com.example.springjpahello.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,12 +18,24 @@ public class Student {
     @GeneratedValue
     private Long id;
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne
     private Passport passport;
 
+    @CreationTimestamp
+    LocalDateTime creationTime;
+    @UpdateTimestamp
+    LocalDateTime updationTime;
+    @CreatedBy
+    String createdBy;
+    @CreatedDate
+    LocalDate createdDate;
     @Embedded
     Address address;
     @ManyToMany
@@ -24,6 +43,22 @@ public class Student {
             joinColumns = @JoinColumn(name = "STUDENT_ID"),
             inverseJoinColumns = @JoinColumn(name = "COURSE_ID"))
     private List<Course> courses = new ArrayList<>();
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public LocalDate getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
 
     public Student() {
     }
@@ -66,6 +101,26 @@ public class Student {
 
     public Long getId() {
         return id;
+    }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public LocalDateTime getUpdationTime() {
+        return updationTime;
+    }
+
+    public void setUpdationTime(LocalDateTime updationTime) {
+        this.updationTime = updationTime;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     @Override

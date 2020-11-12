@@ -11,8 +11,10 @@ public class SpringjpahelloApplication {
     public static void main(String[] args) {
        ApplicationContext context= SpringApplication.run(SpringjpahelloApplication.class, args);
        DemoService demoService=context.getBean(DemoService.class);
-       demoService.provideService();
+      // demoService.provideService();
+        demoService.employeeService();
      //  demoService.findDistinctByIdEndingWith2AndName();
-
+  //      demoService.userService();
+//demoService.employeeService();
     }
 }

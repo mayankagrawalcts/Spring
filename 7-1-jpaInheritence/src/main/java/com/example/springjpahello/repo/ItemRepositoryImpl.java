@@ -1,6 +1,7 @@
 package com.example.springjpahello.repo;
 
 import com.example.springjpahello.model.Item;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Transactional
 
 public class ItemRepositoryImpl {
-    @PersistenceContext
+    @Autowired
     EntityManager em;
 
     public void callProc() {

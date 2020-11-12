@@ -1,9 +1,11 @@
 package com.example.springjpahello.entity;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 import javax.persistence.Entity;
-
+@Data
 @Entity
 public class PartTimeEmployee extends Employee {
 
